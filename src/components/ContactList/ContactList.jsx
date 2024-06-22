@@ -1,22 +1,24 @@
 import Contact from "../Contact/Contact";
-import css from "./ContacList.module.css";
+import css from "./ContactList.module.css";
 
-const ContactList = ({ contacts, onDeleteContacts }) => {
+import { useSelector } from "react-redux";
+import { selectContacts } from "../../redux/contactsSlice";
+import { selectNameFilter } from "../../redux/filtersSlice";
+
+const ContactList = () => {
+  const contactsItems = useSelector(selectContacts);
+  const filter = useSelector(selectNameFilter);
+
+  const filteredContacts = contactsItems.filter((contact) =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
+
   return (
-    <>
-      <h3 className={css.results}>Results:</h3>
-      <ul className={css.contactList}>
-        {contacts.map(({ id, name, number }) => (
-          <Contact
-            key={id}
-            name={name}
-            number={number}
-            id={id}
-            onDeleteContacts={onDeleteContacts}
-          />
-        ))}
-      </ul>
-    </>
+    <ul className={css.contactList}>
+      {filteredContacts.map(({ id, name, number }) => (
+        <Contact key={id} name={name} number={number} id={id} />
+      ))}
+    </ul>
   );
 };
 
